@@ -1,14 +1,6 @@
 import sys
 from functions import func
 
-def myRound(x, n):
-    a = x * (10 ** n)
-    if a - int(a) >= 0.5:
-        b = int(a) + 1
-        return b * (10 ** (0-n))
-    else:
-        b = int(a)
-        return b * (10 ** (0-n))
 
 def brute(x_min, x_max, y_min, y_max):
     z_min = 9999
@@ -18,7 +10,7 @@ def brute(x_min, x_max, y_min, y_max):
             if z < z_min:
                 z_min = z
 
-    return z_min
+    return round(z_min)
 
 def main():
     infile = open(sys.argv[1], "r")
