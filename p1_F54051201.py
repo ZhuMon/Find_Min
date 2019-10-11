@@ -19,13 +19,12 @@ def fun_thread(t):
             z = func(x,y)
             if z < z_min:
                 z_min = z
-
-    
-
+                
 
 def brute(t):
     """
     input <MyRange> t
+    output <Float> z_min
     """
     global z_min
     z_min = 9999
@@ -41,37 +40,75 @@ def brute(t):
 
     return round(z_min,3)
 
-def hill_climbing(point):
-    for p in point:
-        p[0]
-        p[1]
+def hill_climbing(x, y, t, step):
+    
+    z_min = func(x, y)
+
+    while True:
+        now_z_min = z_min
+
+        # climb left
+        if x-step >= t.x_min:
+            z = func(x-step, y)
+            if z < z_min:
+                x = x-step
+                z_min = z
+
+        # climb right
+        if x+step <= t.x_max:
+            z = func(x+step, y)
+            if z < z_min:
+                x = x+step
+                z_min = z
+
+        # climb up
+        if y+step <= t.y_max:
+            z = func(x, y+step)
+            if z < z_min:
+                y = y+step
+                z_min = z
+
+        # climb down
+        if y-step >= t.y_min:
+            z = func(x, y-step)
+            if z < z_min:
+                y = y-step
+                z_min = z
+
+        if now_z_min == z_min:
+            break
+
+    return z_min
+    
 
 def main():
     infile = open(sys.argv[1], "r")
+    outfile = open(sys.argv[2], "w")
+
     lines = infile.readlines()
     x_min = int(lines[0].split(',')[0])
     x_max = int(lines[0].split(',')[1])
     y_min = int(lines[1].split(',')[0])
     y_max = int(lines[1].split(',')[1])
 
+    # put range into my class: MyRange
     threshold = MyRange(x_min, x_max, y_min, y_max)
+    
+    # do brutal formula
+    z_min = brute(threshold)
+    outfile.write("{:.3f}\n".format(z_min))
 
+    # read init point and do hill_climbing
     init_num = int(lines[2])
     init_point = []
     for i in range(init_num):
-        x = float(lines[3+i].split(',')[0])
-        y = float(lines[3+i].split(',')[1])
-        init_point.append([x,y])
-
-    z_min = brute(threshold)
-    z_min_climb = hill_climbing(init_point)
-    # print(z_min)
-    outfile = open(sys.argv[2], "w")
-    outfile.write(str("{:.3f}".format(z_min)))
+        x = int(lines[3+i].split(',')[0])
+        y = int(lines[3+i].split(',')[1])
+        z_min = hill_climbing(x, y, threshold, 1)
+        outfile.write("{:.3f}\n".format(z_min))
     
-
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Lose argument")
+    if len(sys.argv) != 3:
+        print("Usage: \n\tpython3 {0} <input file> <output file>".format(sys.argv[0]))
         sys.exit(1)
     main()
