@@ -72,8 +72,7 @@ def hill_climbing(x, y, t, step):
 
         if now_z_min == z_min:
             break
-
-    return z_min
+    return z_min, count_func
     
 
 def main():
@@ -96,12 +95,14 @@ def main():
     # read init point and do hill_climbing
     init_num = int(lines[2])
     init_point = []
+    aver_fun_count = 0
     for i in range(init_num):
         x = int(lines[3+i].split(',')[0])
         y = int(lines[3+i].split(',')[1])
-        z_min = hill_climbing(x, y, threshold, 1)
+        z_min, func_count = hill_climbing(x, y, threshold, 16)
+        print("({0},{1})\t{2}\t{3:.3f}".format(x,y,func_count, z_min))
         outfile.write("{:.3f}\n".format(z_min))
-    
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: \n\tpython3 {0} <input file> <output file>".format(sys.argv[0]))
