@@ -1,6 +1,5 @@
 import sys
 from functions import func
-import threading
 
 class MyRange():
     def __init__(self, x_min, x_max, y_min, y_max):
@@ -9,47 +8,40 @@ class MyRange():
         self.y_min = y_min
         self.y_max = y_max
 
-        self.x_mid = (x_min+x_max)//2
-        self.y_mid = (y_min+y_max)//2 
-
-def fun_thread(t):
-    global z_min
-    for x in range(t.x_min, t.x_max):
-        for y in range(t.y_min, t.y_max):
-            z = func(x,y)
-            if z < z_min:
-                z_min = z
-                
-
 def brute(t):
     """
     input <MyRange> t
     output <Float> z_min
     """
-    global z_min
     z_min = 9999
+    
+    # count execution of func() 
+    count_func = 0
 
-    t1 = MyRange(t.x_min, t.x_mid, t.y_min, t.y_mid)
-    t2 = MyRange(t.x_mid, t.x_max, t.y_mid, t.y_max)
-    a_th = threading.Thread(target=fun_thread, args=(t1,))
-    b_th = threading.Thread(target=fun_thread, args=(t2,))
-    a_th.start()
-    b_th.start()
-    a_th.join()
-    b_th.join()
+    for x in range(t.x_min, t.x_max):
+        for y in range(t.y_min, t.y_max):
+            z = func(x,y)
+            count_func += 1
+            if z < z_min:
+                z_min = z
+    print("Brute: {0}".format(count_func))
 
     return round(z_min,3)
 
 def hill_climbing(x, y, t, step):
-    
+    # count execution of func() 
+    count_func = 0
+
     z_min = func(x, y)
+    count_func += 1
 
     while True:
-        now_z_min = z_min
+        now_z_min = z_min # for check whether break the loop
 
         # climb left
         if x-step >= t.x_min:
             z = func(x-step, y)
+            count_func += 1
             if z < z_min:
                 x = x-step
                 z_min = z
@@ -57,6 +49,7 @@ def hill_climbing(x, y, t, step):
         # climb right
         if x+step <= t.x_max:
             z = func(x+step, y)
+            count_func += 1
             if z < z_min:
                 x = x+step
                 z_min = z
@@ -64,6 +57,7 @@ def hill_climbing(x, y, t, step):
         # climb up
         if y+step <= t.y_max:
             z = func(x, y+step)
+            count_func += 1
             if z < z_min:
                 y = y+step
                 z_min = z
@@ -71,6 +65,7 @@ def hill_climbing(x, y, t, step):
         # climb down
         if y-step >= t.y_min:
             z = func(x, y-step)
+            count_func += 1
             if z < z_min:
                 y = y-step
                 z_min = z
