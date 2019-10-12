@@ -99,8 +99,8 @@ def main():
     for i in range(init_num):
         x = int(lines[3+i].split(',')[0])
         y = int(lines[3+i].split(',')[1])
-        z_min, func_count = hill_climbing(x, y, threshold, 16)
-        print("({0},{1})\t{2}\t{3:.3f}".format(x,y,func_count, z_min))
+        z_min, func_count = hill_climbing(x, y, threshold, 1)
+        print("({0:-3d},{1:-3d})\t{2}\t{3:.3f}".format(x,y,func_count, z_min))
         outfile.write("{:.3f}\n".format(z_min))
 
 if __name__ == "__main__":
